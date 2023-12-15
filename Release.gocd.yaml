@@ -28,7 +28,7 @@ pipelines:
                       - ci
                     command: npm
                     run_if: passed
-                 - exec:
+                - exec:
                     arguments:
                       - run
                       - build-packages
