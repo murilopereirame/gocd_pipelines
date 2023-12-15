@@ -28,9 +28,18 @@ pipelines:
                       - ci
                     command: npm
                     run_if: passed
+              artifacts:
+                - build:
+                    source: node_modules
+                    destination: node_modules
             Build-Packages:
               timeout: 0
               tasks:
+                - fetch:
+                    stage: Install-Dependencies
+                    job: Install-NPM-Packages
+                    source: node_modules/
+                    destination: node_modules/
                 - exec:
                     arguments:
                       - run
@@ -52,6 +61,11 @@ pipelines:
                     source: build
                     destination: web_base
               tasks:
+                - fetch:
+                    stage: Install-Dependencies
+                    job: Install-NPM-Packages
+                    source: node_modules/
+                    destination: node_modules/
                 - exec:
                     arguments:
                       - webapp.js
@@ -80,6 +94,11 @@ pipelines:
                     job: Build
                     source: web_base/
                     destination: build/
+                - fetch:
+                    stage: Install-Dependencies
+                    job: Install-NPM-Packages
+                    source: node_modules/
+                    destination: node_modules/
                 - exec:
                     arguments:
                       - desktop
