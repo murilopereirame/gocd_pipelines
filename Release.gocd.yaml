@@ -1,0 +1,89 @@
+format_version: 10
+pipelines:
+  Release:
+    group: defaultGroup
+    label_template: ${COUNT}
+    lock_behavior: none
+    display_order: -1
+    materials:
+      git-f1157e8:
+        git: https://github.com/tutao/tutanota.git
+        shallow_clone: false
+        auto_update: true
+        branch: master
+    stages:
+      - Install-Dependencies:
+          fetch_materials: true
+          keep_artifacts: true
+          clean_workspace: false
+          approval:
+            type: success
+            allow_only_on_success: false
+          jobs:
+            Install-NPM-Packages:
+              timeout: 0
+              tasks:
+                - exec:
+                    arguments:
+                      - ci
+                    command: npm
+                    run_if: passed
+            Build-Packages:
+              timeout: 0
+              tasks:
+                - exec:
+                    arguments:
+                      - run
+                      - build-packages
+                    command: npm
+                    run_if: passed
+      - Build-Web-App:
+          fetch_materials: true
+          keep_artifacts: false
+          clean_workspace: false
+          approval:
+            type: success
+            allow_only_on_success: true
+          jobs:
+            Build:
+              timeout: 0
+              artifacts:
+                - build:
+                    source: build
+                    destination: web_base
+              tasks:
+                - exec:
+                    arguments:
+                      - webapp.js
+                      - release
+                    command: node
+                    run_if: passed
+      - Build-Linux-App:
+          fetch_materials: true
+          keep_artifacts: false
+          clean_workspace: false
+          approval:
+            type: success
+            allow_only_on_success: true
+          jobs:
+            Build:
+              resources:
+                - linux
+              timeout: 0
+              artifacts:
+                - build:
+                    source: artifacts
+                    destination: linux-app
+              tasks:
+                - fetch:
+                    stage: Build-Web-App
+                    job: Build
+                    source: web_base/
+                    destination: build/
+                - exec:
+                    arguments:
+                      - desktop
+                      - --existing
+                      - --platform linux
+                    command: node
+                    run_if: passed
