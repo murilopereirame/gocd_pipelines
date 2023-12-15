@@ -1,7 +1,7 @@
 format_version: 10
 pipelines:
   Release:
-    group: defaultGroup
+    group: Tuta
     label_template: ${COUNT}
     lock_behavior: none
     display_order: -1
