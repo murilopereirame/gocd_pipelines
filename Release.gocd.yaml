@@ -37,7 +37,7 @@ pipelines:
               artifacts:
                 - build:
                     source: node_modules
-                    destination: node_modules
+                    destination: packages
       - Build-Web-App:
           fetch_materials: true
           keep_artifacts: false
@@ -56,8 +56,8 @@ pipelines:
                 - fetch:
                     stage: Install-Dependencies
                     job: Install-NPM-Packages
-                    source: node_modules/
-                    destination: .
+                    source: packages/node_modules/
+                    destination: ./node_modules
                 - exec:
                     arguments:
                       - webapp.js
@@ -89,8 +89,8 @@ pipelines:
                 - fetch:
                     stage: Install-Dependencies
                     job: Install-NPM-Packages
-                    source: node_modules/
-                    destination: .
+                    source: packages/node_modules/
+                    destination: ./node_modules
                 - exec:
                     arguments:
                       - desktop
