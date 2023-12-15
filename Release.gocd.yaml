@@ -28,24 +28,16 @@ pipelines:
                       - ci
                     command: npm
                     run_if: passed
-              artifacts:
-                - build:
-                    source: node_modules
-                    destination: node_modules
-            Build-Packages:
-              timeout: 0
-              tasks:
-                - fetch:
-                    stage: Install-Dependencies
-                    job: Install-NPM-Packages
-                    source: node_modules/
-                    destination: node_modules/
-                - exec:
+                 - exec:
                     arguments:
                       - run
                       - build-packages
                     command: npm
                     run_if: passed
+              artifacts:
+                - build:
+                    source: node_modules
+                    destination: node_modules
       - Build-Web-App:
           fetch_materials: true
           keep_artifacts: false
