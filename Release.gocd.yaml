@@ -42,8 +42,8 @@ pipelines:
                     run_if: passed
               artifacts:
                 - build:
-                    source: node_modules
-                    destination: packages
+                    source: build
+                    destination: web_base
       - Build-Linux-App:
           fetch_materials: true
           keep_artifacts: false
@@ -64,12 +64,7 @@ pipelines:
                 - fetch:
                     stage: Build-Web-App
                     job: Build
-                    source: web_base/
-                    destination: build/
-                - fetch:
-                    stage: Install-Dependencies
-                    job: Install-NPM-Packages
-                    source: packages/node_modules/
+                    source: web_base/build
                     destination: ./
                 - exec:
                     arguments:
