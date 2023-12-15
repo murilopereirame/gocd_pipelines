@@ -12,7 +12,7 @@ pipelines:
         auto_update: true
         branch: master
     stages:
-      - Install-Dependencies:
+      - Build-Base-App:
           fetch_materials: true
           keep_artifacts: true
           clean_workspace: false
@@ -34,36 +34,16 @@ pipelines:
                       - build-packages
                     command: npm
                     run_if: passed
-              artifacts:
-                - build:
-                    source: node_modules
-                    destination: packages
-      - Build-Web-App:
-          fetch_materials: true
-          keep_artifacts: false
-          clean_workspace: false
-          approval:
-            type: success
-            allow_only_on_success: true
-          jobs:
-            Build:
-              timeout: 0
-              artifacts:
-                - build:
-                    source: build
-                    destination: web_base
-              tasks:
-                - fetch:
-                    stage: Install-Dependencies
-                    job: Install-NPM-Packages
-                    source: packages/node_modules/
-                    destination: ./
                 - exec:
                     arguments:
                       - webapp.js
                       - release
                     command: node
                     run_if: passed
+              artifacts:
+                - build:
+                    source: node_modules
+                    destination: packages
       - Build-Linux-App:
           fetch_materials: true
           keep_artifacts: false
